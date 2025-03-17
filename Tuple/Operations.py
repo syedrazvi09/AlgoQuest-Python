@@ -1,0 +1,6 @@
+numbers = (5, 8, 12, 25, 20)
+print("First Element: ",numbers[0])
+print("Last Element: ",numbers[-1])
+print("Slicing: ",numbers[1:4])
+print("Checking if exists: ",15 in numbers)
+print("Length of tuple: ",len(numbers))
