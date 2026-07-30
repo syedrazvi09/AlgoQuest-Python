@@ -45,3 +45,18 @@ def search(head, target):
     return False
 
 print(search(head, 2))
+
+def removeelement(head, target):
+    dummy = SinglyNode(0, head)
+    cur = head
+    prev = dummy
+    while cur:
+        if cur.val == target:
+            prev.next = cur.next
+        else:
+            prev = cur
+        cur = cur.next
+
+
+print(removeelement(head, 3))
+display(head)
