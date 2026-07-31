@@ -1,62 +1,37 @@
-class SinglyNode:
-    def __init__(self, val, next = None):
-        self.val = val
-        self.next = next
+class Solution:
+    def checkInclusion(self, s1: str, s2: str) -> bool:
 
-    def __str__(self):
-        return str(self.val)
+        if len(s1) > len(s2):
+            return False
 
+        need = [0] * 26
+        window = [0] * 26
 
-head = SinglyNode(1)
-A = SinglyNode(3)
-B = SinglyNode(5)
-C = SinglyNode(7)
+        # Build frequency arrays
+        for c in s1:
+            need[ord(c) - ord('a')] += 1
 
-head.next = A
-A.next = B
-B.next = C
+        # First window
+        for i in range(len(s1)):
+            window[ord(s2[i]) - ord('a')] += 1
 
-
-
-cur = head
-
-while cur:
-    print(cur)
-    cur = cur.next
-
-
-def display(head):
-    cur = head
-    elements = []
-    while cur:
-        elements.append(str(cur.val))
-        cur = cur.next
-    print(' -> '.join(elements))
-
-display(head)
-
-
-def search(head, target):
-    cur = head
-    while cur:
-        if cur.val == target:
+        if need == window:
             return True
-        cur = cur.next
-    return False
 
-print(search(head, 2))
+        left = 0
 
-def removeelement(head, target):
-    dummy = SinglyNode(0, head)
-    cur = head
-    prev = dummy
-    while cur:
-        if cur.val == target:
-            prev.next = cur.next
-        else:
-            prev = cur
-        cur = cur.next
+        # Slide window
+        for right in range(len(s1), len(s2)):
 
+            # Add new character
+            window[ord(s2[right]) - ord('a')] += 1
 
-print(removeelement(head, 3))
-display(head)
+            # Remove old character
+            window[ord(s2[left]) - ord('a')] -= 1
+
+            left += 1
+
+            if need == window:
+                return True
+
+        return False
