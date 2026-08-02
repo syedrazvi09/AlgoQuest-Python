@@ -1,37 +1,71 @@
-class Solution:
-    def checkInclusion(self, s1: str, s2: str) -> bool:
+import sys
 
-        if len(s1) > len(s2):
-            return False
 
-        need = [0] * 26
-        window = [0] * 26
+def solve(N, M, F, A, B, C, MOD=None):
+    A = [0] + A
+    B = [0] + B
+    C = [0] + C
 
-        # Build frequency arrays
-        for c in s1:
-            need[ord(c) - ord('a')] += 1
+    INF = float('inf')
 
-        # First window
-        for i in range(len(s1)):
-            window[ord(s2[i]) - ord('a')] += 1
+    dpA = [[INF] * (M + 1) for _ in range(N + 1)]
+    dpB = [[INF] * (M + 1) for _ in range(N + 1)]
 
-        if need == window:
-            return True
+    if N >= 1:
+        dpA[1][0] = 0
+    if M >= 1:
+        dpB[0][1] = 0
 
-        left = 0
+    for i in range(2, N + 1):
+        dpA[i][0] = dpA[i - 1][0] + abs(A[i] - A[i - 1])
 
-        # Slide window
-        for right in range(len(s1), len(s2)):
+    for j in range(2, M + 1):
+        dpB[0][j] = dpB[0][j - 1] + abs(B[j] - B[j - 1])
 
-            # Add new character
-            window[ord(s2[right]) - ord('a')] += 1
+    for i in range(0, N + 1):
+        for j in range(0, M + 1):
+            if i == 0 and j == 0:
+                continue
+            step = i + j
 
-            # Remove old character
-            window[ord(s2[left]) - ord('a')] -= 1
+            if i >= 1:
+                best = INF
+                if j == 0:
+                    pass
+                else:
+                    if i - 1 >= 1:
+                        best = min(best, dpA[i - 1][j] + abs(A[i] - A[i - 1]))
+                    best = min(best, dpB[i - 1][j] + abs(A[i] - B[j]) + F * C[step])
+                    if best < INF:
+                        dpA[i][j] = best
 
-            left += 1
+            if j >= 1:
+                best = INF
+                if i == 0:
+                    pass
+                else:
+                    if j - 1 >= 1:
+                        best = min(best, dpB[i][j - 1] + abs(B[j] - B[j - 1]))
+                    best = min(best, dpA[i][j - 1] + abs(B[j] - A[i]) + F * C[step])
+                    if best < INF:
+                        dpB[i][j] = best
 
-            if need == window:
-                return True
+    if N == 0:
+        return dpB[0][M]
+    if M == 0:
+        return dpA[N][0]
+    return min(dpA[N][M], dpB[N][M])
 
-        return False
+
+# ---- Test case from the prompt ----
+N = 2
+M = 2
+F = 10
+A = [10, 20]
+B = [100, 110]
+C = [1, 2, 1, 3]
+
+result = solve(N, M, F, A, B, C)
+print("Got:", result)
+print("Expected: 110")
+print("Match!" if result == 110 else "Mismatch!")
