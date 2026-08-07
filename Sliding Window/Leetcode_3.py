@@ -1,21 +1,16 @@
 def lols(s):
     seen = set()
-    res = 0
-    count = 0
     window = 0
+    res = 0
+
     for i in range(len(s)):
         while s[i] in seen:
             seen.remove(s[window])
             window += 1
-            res = 0
         seen.add(s[i])
-        count = i - window + 1
-        res = max(count, res)
+        res = max(res, i - window + 1)
+    return res
 
 
-
-    print(len(seen))
-    print(res)
-
-str = "1r1t7"
-print(lols(str))
+s = "1R1T7"
+print(lols(s))
